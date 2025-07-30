@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Android Extension</string>
+    <string name="welcome_message">Welcome to the Android Extension!</string>
+    <string name="description">This extension enhances the functionality of the Android application.</string>
+</resources>
