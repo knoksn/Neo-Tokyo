@@ -5,8 +5,12 @@ import QuestDisplay from './QuestDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { QuestIcon } from './icons';
 
-const QuestGenerator: React.FC = () => {
-  const [generatedQuest, setGeneratedQuest] = useState<Quest | null>(null);
+interface QuestGeneratorProps {
+  generatedQuest: Quest | null;
+  setGeneratedQuest: (quest: Quest | null) => void;
+}
+
+const QuestGenerator: React.FC<QuestGeneratorProps> = ({ generatedQuest, setGeneratedQuest }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +27,7 @@ const QuestGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setGeneratedQuest]);
 
   return (
     <div className="space-y-6 animate-fade-in">

@@ -6,10 +6,14 @@ import DialogueDisplay from './DialogueDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { NpcIcon, SituationIcon, DialogueIcon } from './icons';
 
-const DialogueGenerator: React.FC = () => {
+interface DialogueGeneratorProps {
+  generatedDialogue: Dialogue | null;
+  setGeneratedDialogue: (dialogue: Dialogue | null) => void;
+}
+
+const DialogueGenerator: React.FC<DialogueGeneratorProps> = ({ generatedDialogue, setGeneratedDialogue }) => {
   const [npcRole, setNpcRole] = useState('An enigmatic information broker known as "Echo"');
   const [situation, setSituation] = useState('Maya meets them in a virtual reality teahouse to trade a secret for a crucial piece of data.');
-  const [generatedDialogue, setGeneratedDialogue] = useState<Dialogue | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +35,7 @@ const DialogueGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [npcRole, situation]);
+  }, [npcRole, situation, setGeneratedDialogue]);
 
   return (
     <div className="space-y-6 animate-fade-in">

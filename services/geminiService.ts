@@ -252,7 +252,7 @@ export const generateArtPrompt = async (
 
     **Composition & Quality:**
     *   **Shot:** Medium close-up, focusing on Maya from the waist up to emphasize her expression and transformation.
-    *   **Style:** Hyper-realistic, Unreal Engine 5 render, photorealistic, 8K resolution, intricate detail, octane render.
+    *   **Style:** Hyper-realistic, cinematic render in Unreal Engine 5.6, photorealistic, 8K resolution, intricate detail, next-gen Nanite geometry and foliage, advanced Lumen global illumination and reflections, octane render.
 
     **Final Instructions:**
     Combine all these elements into a single, cohesive paragraph. Start the prompt with the core subject and action. Use dynamic and descriptive language. Do not add any conversational text, just the final prompt.
@@ -674,5 +674,105 @@ export const generatePlaytestingScenario = async (): Promise<PlaytestingScenario
     } catch (error) {
         console.error("Error generating Playtesting Scenario from Gemini:", error);
         throw new Error("Failed to communicate with the AI model to generate Playtesting Scenario.");
+    }
+};
+
+export interface Blueprint {
+  title: string;
+  description: string;
+  notes: string;
+  variables: {
+    name: string;
+    type: string;
+    description: string;
+  }[];
+  nodes: {
+    id: number;
+    name: string;
+    type: 'Event' | 'Function Call' | 'Flow Control' | 'Variable' | 'Action' | 'Macro' | string;
+    description: string;
+    connections: number[];
+  }[];
+}
+
+const blueprintSchema = {
+  type: Type.OBJECT,
+  properties: {
+    title: { type: Type.STRING, description: "A concise title for the Blueprint logic, e.g., 'Keycard-Activated Door'." },
+    description: { type: Type.STRING, description: "A high-level overview of what this Blueprint accomplishes." },
+    notes: { type: Type.STRING, description: "Implementation notes, best practices, or potential UE 5.6 specific considerations (e.g., 'Use a Box Collision component for the trigger volume')." },
+    variables: {
+      type: Type.ARRAY,
+      description: "An array of variables required for this Blueprint.",
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          name: { type: Type.STRING, description: "The name of the variable, e.g., 'IsLocked'." },
+          type: { type: Type.STRING, description: "The Unreal Engine variable type, e.g., 'Boolean', 'Actor Reference', 'Name'." },
+          description: { type: Type.STRING, description: "A brief explanation of the variable's purpose." },
+        },
+        required: ["name", "type", "description"],
+      },
+    },
+    nodes: {
+      type: Type.ARRAY,
+      description: "A step-by-step breakdown of the Blueprint nodes and their connections.",
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          id: { type: Type.INTEGER, description: "A unique integer ID for this node, starting from 1." },
+          name: { type: Type.STRING, description: "The name of the Blueprint node, e.g., 'Event BeginPlay', 'Branch', 'Play Sound at Location'." },
+          type: { type: Type.STRING, description: "The category of the node (e.g., 'Event', 'Function Call', 'Flow Control', 'Variable', 'Action', 'Macro')." },
+          description: { type: Type.STRING, description: "A detailed explanation of what this node does and its configuration (e.g., which variable it gets/sets, condition for a Branch)." },
+          connections: {
+            type: Type.ARRAY,
+            description: "An array of node IDs that this node's execution pin connects to.",
+            items: { type: Type.INTEGER }
+          },
+        },
+        required: ["id", "name", "type", "description", "connections"],
+      },
+    },
+  },
+  required: ["title", "description", "notes", "variables", "nodes"],
+};
+
+export const generateBlueprint = async (logic: string): Promise<Blueprint> => {
+    const model = "gemini-2.5-flash";
+    const prompt = `
+        You are a senior Unreal Engine 5.6 developer specializing in Blueprint visual scripting. Your task is to take a user's request for gameplay logic and break it down into a structured, easy-to-follow Blueprint plan. This plan will be used by a developer to implement the feature in the UE 5.6 editor.
+
+        **USER'S LOGIC REQUEST:**
+        "${logic}"
+
+        **INSTRUCTIONS:**
+        1.  **Analyze the Request:** Understand the core components: triggers, actions, conditions, and actors involved.
+        2.  **Design the Blueprint:** Create a logical flow using common Blueprint nodes. Think about events, branches, loops, functions, and variables.
+        3.  **Identify Variables:** List all necessary variables, their types (e.g., Boolean, Actor, Vector, Name), and a brief description.
+        4.  **Detail the Nodes:** Describe each node in the execution flow.
+            *   Give each node a unique integer ID, starting from 1.
+            *   Specify the node's name and type.
+            *   Explain what the node does and how it should be configured.
+            *   Use the 'connections' array to show the flow of execution from this node to others, referencing their IDs. The connection represents the white "execution" wire in Blueprints.
+        5.  **Add Implementation Notes:** Provide helpful tips or best practices for implementing this in Unreal Engine 5.6. For example, mention required components on the Actor (like Collision Components) or suggest specific functions.
+        6.  **JSON Output:** Generate the blueprint plan strictly following the provided JSON schema. Do not add any extra text or explanations outside of the JSON structure.
+    `;
+
+    try {
+        const response: GenerateContentResponse = await ai.models.generateContent({
+            model: model,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: blueprintSchema,
+            }
+        });
+        
+        const jsonText = response.text.trim();
+        return JSON.parse(jsonText) as Blueprint;
+
+    } catch (error) {
+        console.error("Error generating Blueprint from Gemini:", error);
+        throw new Error("Failed to communicate with the AI model to generate Blueprint.");
     }
 };

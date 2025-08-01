@@ -5,8 +5,12 @@ import LoreDisplay from './LoreDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { LoreIcon } from './icons';
 
-const LoreGenerator: React.FC = () => {
-  const [generatedLore, setGeneratedLore] = useState<Lore | null>(null);
+interface LoreGeneratorProps {
+  generatedLore: Lore | null;
+  setGeneratedLore: (lore: Lore | null) => void;
+}
+
+const LoreGenerator: React.FC<LoreGeneratorProps> = ({ generatedLore, setGeneratedLore }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +27,7 @@ const LoreGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setGeneratedLore]);
 
   return (
     <div className="space-y-6 animate-fade-in">

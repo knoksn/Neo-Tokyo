@@ -5,8 +5,12 @@ import PlaytestingScenarioDisplay from './PlaytestingScenarioDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { PlaytestIcon } from './icons';
 
-const PlaytestingScenarioGenerator: React.FC = () => {
-  const [generatedScenario, setGeneratedScenario] = useState<PlaytestingScenario | null>(null);
+interface PlaytestingScenarioGeneratorProps {
+  generatedScenario: PlaytestingScenario | null;
+  setGeneratedScenario: (scenario: PlaytestingScenario | null) => void;
+}
+
+const PlaytestingScenarioGenerator: React.FC<PlaytestingScenarioGeneratorProps> = ({ generatedScenario, setGeneratedScenario }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +27,7 @@ const PlaytestingScenarioGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setGeneratedScenario]);
 
   return (
     <div className="space-y-6 animate-fade-in">

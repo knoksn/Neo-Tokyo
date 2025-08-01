@@ -5,8 +5,12 @@ import NpcDisplay from './NpcDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { NpcIcon } from './icons';
 
-const NpcGenerator: React.FC = () => {
-  const [generatedNpc, setGeneratedNpc] = useState<Npc | null>(null);
+interface NpcGeneratorProps {
+  generatedNpc: Npc | null;
+  setGeneratedNpc: (npc: Npc | null) => void;
+}
+
+const NpcGenerator: React.FC<NpcGeneratorProps> = ({ generatedNpc, setGeneratedNpc }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +27,7 @@ const NpcGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setGeneratedNpc]);
 
   return (
     <div className="space-y-6 animate-fade-in">

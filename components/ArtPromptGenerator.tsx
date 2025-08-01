@@ -6,10 +6,14 @@ import ArtPromptDisplay from './ArtPromptDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { ArtIcon, MoodIcon, TransformIcon } from './icons';
 
-const ArtPromptGenerator: React.FC = () => {
+interface ArtPromptGeneratorProps {
+  generatedPrompt: string;
+  setGeneratedPrompt: (prompt: string) => void;
+}
+
+const ArtPromptGenerator: React.FC<ArtPromptGeneratorProps> = ({ generatedPrompt, setGeneratedPrompt }) => {
   const [transformation, setTransformation] = useState('liquid mercury');
   const [mood, setMood] = useState('mysterious');
-  const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +31,7 @@ const ArtPromptGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [transformation, mood]);
+  }, [transformation, mood, setGeneratedPrompt]);
 
   return (
     <div className="space-y-6 animate-fade-in">

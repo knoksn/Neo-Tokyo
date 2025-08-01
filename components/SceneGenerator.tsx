@@ -6,11 +6,15 @@ import SceneDisplay from './SceneDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { LocationIcon, CharacterIcon, SituationIcon, SparklesIcon } from './icons';
 
-const SceneGenerator: React.FC = () => {
+interface SceneGeneratorProps {
+  generatedScene: string;
+  setGeneratedScene: (scene: string) => void;
+}
+
+const SceneGenerator: React.FC<SceneGeneratorProps> = ({ generatedScene, setGeneratedScene }) => {
   const [location, setLocation] = useState('Crimson Dragon Tower rooftop');
   const [outfit, setOutfit] = useState('a chameleon-cloak that glitches with digital static');
   const [situation, setSituation] = useState('preparing for a high-stakes data heist in the pouring rain');
-  const [generatedScene, setGeneratedScene] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +36,7 @@ const SceneGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [location, outfit, situation]);
+  }, [location, outfit, situation, setGeneratedScene]);
 
   return (
     <div className="space-y-6 animate-fade-in">

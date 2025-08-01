@@ -6,10 +6,14 @@ import ScenarioDisplay from './ScenarioDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { EnvironmentIcon, EnemyIcon, ScenarioIcon } from './icons';
 
-const ScenarioGenerator: React.FC = () => {
+interface ScenarioGeneratorProps {
+  generatedScenario: Scenario | null;
+  setGeneratedScenario: (scenario: Scenario | null) => void;
+}
+
+const ScenarioGenerator: React.FC<ScenarioGeneratorProps> = ({ generatedScenario, setGeneratedScenario }) => {
   const [environment, setEnvironment] = useState('a rain-slicked corporate data spire rooftop');
   const [enemies, setEnemies] = useState('two elite cyber-samurai guards and a hovering surveillance drone');
-  const [generatedScenario, setGeneratedScenario] = useState<Scenario | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +35,7 @@ const ScenarioGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [environment, enemies]);
+  }, [environment, enemies, setGeneratedScenario]);
 
   return (
     <div className="space-y-6 animate-fade-in">

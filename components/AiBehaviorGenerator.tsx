@@ -5,8 +5,12 @@ import AiBehaviorDisplay from './AiBehaviorDisplay';
 import LoadingSpinner from './LoadingSpinner';
 import { AiBehaviorIcon } from './icons';
 
-const AiBehaviorGenerator: React.FC = () => {
-  const [generatedAiBehavior, setGeneratedAiBehavior] = useState<AiBehavior | null>(null);
+interface AiBehaviorGeneratorProps {
+  generatedAiBehavior: AiBehavior | null;
+  setGeneratedAiBehavior: (behavior: AiBehavior | null) => void;
+}
+
+const AiBehaviorGenerator: React.FC<AiBehaviorGeneratorProps> = ({ generatedAiBehavior, setGeneratedAiBehavior }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +27,7 @@ const AiBehaviorGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [setGeneratedAiBehavior]);
 
   return (
     <div className="space-y-6 animate-fade-in">
