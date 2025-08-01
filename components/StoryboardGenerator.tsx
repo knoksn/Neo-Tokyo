@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { generateStoryboard, Storyboard } from '../services/geminiService';
 import TextareaGroup from './TextareaGroup';
@@ -18,7 +17,7 @@ const StoryboardGenerator: React.FC<StoryboardGeneratorProps> = ({ generatedStor
 
   const handleGenerate = useCallback(async () => {
     if (!sceneDescription) {
-      setError('A Scene Description must be provided.');
+      setError('A scene description must be provided.');
       return;
     }
     setIsLoading(true);
@@ -40,12 +39,12 @@ const StoryboardGenerator: React.FC<StoryboardGeneratorProps> = ({ generatedStor
     <div className="space-y-6 animate-fade-in">
       <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 shadow-lg shadow-cyan-500/5">
         <TextareaGroup
-            label="Scene Description"
-            value={sceneDescription}
-            onChange={(e) => setSceneDescription(e.target.value)}
-            placeholder="e.g., Maya faces Marcus on a glitching rooftop as timelines collapse"
-            icon={<QuestIcon />}
-            rows={5}
+          label="Scene Description"
+          value={sceneDescription}
+          onChange={(e) => setSceneDescription(e.target.value)}
+          placeholder="e.g., Maya faces Marcus on a glitching rooftop as timelines collapse"
+          icon={<QuestIcon />}
+          rows={4}
         />
         <div className="mt-6 text-center">
             <button

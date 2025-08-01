@@ -5,52 +5,44 @@ import Modal from './Modal';
 import { GithubIcon, CopyIcon, CheckIcon } from './icons';
 
 interface DlcCharacterDisplayProps {
-  dlcCharacter: DlcCharacter | null;
+  dlc: DlcCharacter | null;
   isLoading: boolean;
 }
 
-const InfoBlock: React.FC<{ title: string; content: string }> = ({ title, content }) => (
-    <div>
-        <h3 className="text-xl font-bold text-cyan-400 mb-2">{title}</h3>
-        <p className="text-gray-300 whitespace-pre-wrap">{content}</p>
-    </div>
-);
-
-const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter, isLoading }) => {
+const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlc, isLoading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isArtPromptCopied, setIsArtPromptCopied] = useState(false);
 
   const handleModalCopy = useCallback(() => {
-    if (dlcCharacter) {
-      const markdown = toDlcCharacterMarkdown(dlcCharacter);
+    if (dlc) {
+      const markdown = toDlcCharacterMarkdown(dlc);
       navigator.clipboard.writeText(markdown);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);
     }
-  }, [dlcCharacter]);
+  }, [dlc]);
   
   const handleArtPromptCopy = useCallback(() => {
-    if (dlcCharacter) {
-      navigator.clipboard.writeText(dlcCharacter.art_prompt);
+    if (dlc) {
+      navigator.clipboard.writeText(dlc.art_prompt);
       setIsArtPromptCopied(true);
       setTimeout(() => setIsArtPromptCopied(false), 2500);
     }
-  }, [dlcCharacter]);
+  }, [dlc]);
 
-
-  if (isLoading || !dlcCharacter) {
+  if (isLoading || !dlc) {
     return null;
   }
 
-  const markdownContent = toDlcCharacterMarkdown(dlcCharacter);
+  const markdownContent = toDlcCharacterMarkdown(dlc);
 
   return (
     <>
       <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 mt-6 shadow-lg shadow-cyan-500/10 animate-fade-in space-y-6">
         <header className="relative">
           <h2 className="text-3xl font-bold text-cyan-400 [text-shadow:_0_0_8px_theme(colors.cyan.500)]">
-            DLC Character: {dlcCharacter.name}
+            DLC Concept: {dlc.name}
           </h2>
           <button
               onClick={() => setIsModalOpen(true)}
@@ -62,14 +54,14 @@ const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter,
         </header>
         
         <div className="border-t border-slate-700/50 pt-6">
-            <InfoBlock title="Intro Scene" content={dlcCharacter.intro_scene} />
+            <InfoBlock title="Intro Scene" content={dlc.intro_scene} />
         </div>
-
+        
         <div className="border-t border-slate-700/50 pt-6">
             <h3 className="text-xl font-bold text-cyan-400 mb-2">AI Art Prompt</h3>
             <div className="relative">
                 <p className="text-gray-300 whitespace-pre-wrap font-mono bg-slate-900 p-4 rounded-md border border-slate-700 text-sm">
-                    {dlcCharacter.art_prompt}
+                    {dlc.art_prompt}
                 </p>
                 <button
                     onClick={handleArtPromptCopy}
@@ -82,18 +74,16 @@ const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter,
         </div>
 
         <div className="border-t border-slate-700/50 pt-6">
-            <InfoBlock title="Community Remix Challenge" content={dlcCharacter.community_challenge} />
+          <InfoBlock title="Community Remix Challenge" content={dlc.community_challenge} isQuote={true}/>
         </div>
-        
+
         <div className="border-t border-slate-700/50 pt-6">
-          <h3 className="font-bold text-xl text-cyan-400 mb-1">Dialogue Sample</h3>
-          <blockquote className="border-l-4 border-cyan-500 pl-4 italic text-gray-300 text-lg">
-              <p>"{dlcCharacter.dialogue_sample}"</p>
-          </blockquote>
+          <InfoBlock title="Dialogue Sample" content={dlc.dialogue_sample} isQuote={true}/>
         </div>
+
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${dlcCharacter.name}`}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${dlc.name}`}>
         <div className="relative">
             <button
                 onClick={handleModalCopy}
@@ -122,5 +112,19 @@ const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter,
     </>
   );
 };
+
+const InfoBlock: React.FC<{ title: string; content: string; isQuote?: boolean }> = ({ title, content, isQuote }) => (
+    <div>
+        <h3 className="font-bold text-xl text-cyan-400 mb-2">{title}</h3>
+        {isQuote ? (
+            <blockquote className="border-l-4 border-cyan-500 pl-4 italic text-gray-300">
+              <p>"{content}"</p>
+          </blockquote>
+        ) : (
+             <p className="text-gray-300">{content}</p>
+        )}
+    </div>
+);
+
 
 export default DlcCharacterDisplay;

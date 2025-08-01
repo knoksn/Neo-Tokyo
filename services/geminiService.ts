@@ -83,15 +83,15 @@ export const askAiGuide = async (question: string, chatHistory: {from: 'user' | 
 
         --- CRITICAL KNOWLEDGE: The Enterprise Paywall System (Full Stack Blueprint) ---
         You are a master expert on the application's built-in enterprise plan. Use this knowledge for ALL relevant modules.
-        - **Core Features:** Login/signup, paywall overlay, pricing tiers (Free, Silver, Gold, Platinum, Lifetime/DLC), unlockable content (articles, scenes, DLC, comics, XR packs), JWT auth, GDPR/PSD2 compliance, 2FA, admin dashboard, automated emails/SMS, Stripe/Vipps integration.
-        - **Architecture:** React/Next.js/Unreal frontend, Node.js backend with Express, PostgreSQL/MongoDB database. Full repo structure is documented.
-        - **Next-Gen Features:**
-          - **Coupons & Referrals:** The system supports creating, validating, and redeeming discount codes via a backend API (/api/coupon/redeem) and tracks user referrals. SQL tables for 'coupons' and 'referrals' are defined.
-          - **Community & Discord Integration:** On successful payment, webhooks notify a Discord server. A discord.js bot automatically assigns special roles (like 'VIP' or 'DLC Owner') to users who have upgraded. The bot handles commands like !coupon, !referral, !perks, and !faq.
-          - **Content Scheduling:** The system is designed to "drip-feed" or schedule content drops for specific membership tiers.
-          - **Automation & Operations:** It includes automated user lifecycle emails (welcome, renewal reminders, failed payments), PDF invoice generation, and refund flows. It has a full QA runbook with nightly tests and webhook monitoring.
-        - **Unreal Engine Integration:** A dedicated .uasset widget (BP_PaywallWidget.uasset) handles the in-game UI. It communicates with the backend via an HTTP Request node to /api/check-access to verify a user's token and unlock DLCs in real-time.
-        - **Go-Live Plan:** A full production launch checklist exists, covering domain setup, live payment testing, Discord bot verification, and admin panel analytics.
+        - **Core Features:** Full-stack system with a React/Next.js frontend, a Node.js/Express backend with a PostgreSQL/MongoDB database. It includes tiered memberships (Free, Silver, Gold, etc.), dynamic content unlocks, multi-provider payment (Stripe, Vipps, PayPal), JWT auth, and GDPR compliance.
+        - **Advanced Features:**
+          - **Coupons & Referrals:** The system supports creating, validating, and redeeming discount codes via a backend API (/api/coupon/redeem) and tracks user referrals using a dedicated database table.
+          - **Community & Discord Integration:** On successful payment, webhooks notify a Discord server. A discord.js bot automatically assigns special roles (like 'VIP' or 'DLC Owner') to users who have upgraded. Users link their accounts via a secure OAuth2 flow, managed on a web dashboard, which also allows admins to manage roles. The bot handles commands like !coupon, !referral, !perks, and !faq.
+          - **Content Scheduling & Drip-Feed:** The system is designed to "drip-feed" or schedule content drops for specific membership tiers, managed via an admin dashboard or a Notion/Google Sheets template.
+          - **Unreal Engine Integration:** A dedicated .uasset widget (BP_PaywallWidget.uasset) handles the in-game UI. It communicates with the backend via an HTTP Request node to /api/check-access to verify a user's token and unlock DLCs in real-time. A full BP graph workflow is documented.
+        - **Go-Live Plan & Ops:** A full production launch and operational playbook exists. This includes a soft launch, full launch with marketing campaigns (email blasts, Discord events), and weekly/quarterly iteration cycles based on user feedback. It covers QA automation (Cypress/Jest), support macros for common issues, DevOps practices like secret rotation and daily backups, and performance monitoring. The AI is a key part of this, with scripts for onboarding and handling support queries.
+        - **Admin & Ops:** A comprehensive admin dashboard is planned for user management, coupon creation, and viewing analytics. The operational plan includes nightly QA scripts, webhook monitoring, and regular database backups.
+        - **AI Onboarding:** A fine-tuning dataset of Q&As is specified to train the AI on common user questions regarding the paywall, features, and lore. The AI is scripted with branching, multi-path onboarding logic.
 
         --- RESPONSE FORMAT ---
         - After EVERY response, you MUST end with the exact phrase: "Anything else I can help you with in Neo Tokyo Noir?"
@@ -101,14 +101,14 @@ export const askAiGuide = async (question: string, chatHistory: {from: 'user' | 
     `;
     
     // Construct the final prompt, checking if it's the first interaction
-    const firstInteractionPrompt = isFirstInteraction 
+    const finalPrompt = isFirstInteraction 
         ? `${context}\n\nThe user's first message is: "${question}". Respond with the appropriate language-specific greeting, answer their question, and then the required closing line.`
         : `${context}\n\nUser Question: "${question}"\n\nOracle's Reply:`;
 
     try {
         const response = await ai.models.generateContent({
             model: model,
-            contents: firstInteractionPrompt,
+            contents: finalPrompt,
         });
         return response.text.trim();
     } catch (error) {
@@ -1046,6 +1046,7 @@ export const generateGlossaryEntry = async (entryType: string, entryName: string
   `;
     return callGemini<GlossaryEntry>(prompt, glossaryEntrySchema);
 };
+
 
 // --- Scene Matrix ---
 export interface SceneMatrixEntryData {

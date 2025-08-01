@@ -7,13 +7,13 @@ import { DlcIcon, CharacterIcon, MoodIcon, SparklesIcon } from './icons';
 
 interface DlcCharacterGeneratorProps {
   generatedDlcCharacter: DlcCharacter | null;
-  setGeneratedDlcCharacter: (character: DlcCharacter | null) => void;
+  setGeneratedDlcCharacter: (dlc: DlcCharacter | null) => void;
 }
 
 const DlcCharacterGenerator: React.FC<DlcCharacterGeneratorProps> = ({ generatedDlcCharacter, setGeneratedDlcCharacter }) => {
   const [name, setName] = useState('Solaris');
-  const [theme, setTheme] = useState('Rogue solar-tech vigilante from a parallel Neo-Tokyo');
-  const [power, setPower] = useState('Aureum Chorus – Summons light-based holographic servitors');
+  const [theme, setTheme] = useState('Rogue solar-tech vigilante');
+  const [power, setPower] = useState('Golden energy scythe');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,11 +27,11 @@ const DlcCharacterGenerator: React.FC<DlcCharacterGeneratorProps> = ({ generated
     setGeneratedDlcCharacter(null);
 
     try {
-      const character = await generateDlcCharacter(name, theme, power);
-      setGeneratedDlcCharacter(character);
+      const dlc = await generateDlcCharacter(name, theme, power);
+      setGeneratedDlcCharacter(dlc);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Failed to generate DLC character. The creative core is offline.');
+      setError(err.message || 'Failed to generate DLC character. The connection to the multiverse is unstable.');
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +49,7 @@ const DlcCharacterGenerator: React.FC<DlcCharacterGeneratorProps> = ({ generated
             icon={<CharacterIcon />}
           />
           <InputGroup
-            label="Theme / Concept"
+            label="Theme"
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
             placeholder="e.g., Rogue solar-tech vigilante"
@@ -59,7 +59,7 @@ const DlcCharacterGenerator: React.FC<DlcCharacterGeneratorProps> = ({ generated
             label="Signature Power"
             value={power}
             onChange={(e) => setPower(e.target.value)}
-            placeholder="e.g., Summons light-based servitors"
+            placeholder="e.g., Golden energy scythe"
             icon={<SparklesIcon />}
           />
         </div>
@@ -72,7 +72,7 @@ const DlcCharacterGenerator: React.FC<DlcCharacterGeneratorProps> = ({ generated
             {isLoading ? (
               <>
                 <LoadingSpinner />
-                <span className="ml-2">Initializing DLC...</span>
+                <span className="ml-2">Breaching...</span>
               </>
             ) : (
               <>
@@ -90,7 +90,7 @@ const DlcCharacterGenerator: React.FC<DlcCharacterGeneratorProps> = ({ generated
         </div>
       )}
 
-      <DlcCharacterDisplay dlcCharacter={generatedDlcCharacter} isLoading={isLoading} />
+      <DlcCharacterDisplay dlc={generatedDlcCharacter} isLoading={isLoading} />
     </div>
   );
 };
