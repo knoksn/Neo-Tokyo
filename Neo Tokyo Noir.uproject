@@ -1,0 +1,28 @@
+{
+    "FileVersion": 3,
+    "EngineAssociation": "5.6",
+    "Category": "",
+    "Description": "Neo Tokyo Noir: Chrome and Shadows. Modular, remixable cyberpunk universe with advanced AI, narrative, BIM integration, and DLC-ready pipeline. Created by SocialSophia & Knoksen.",
+    "Modules": [
+        {
+            "Name": "NeoTokyoNoir",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        }
+    ],
+    "TargetPlatforms": [
+        "WindowsNoEditor",
+        "LinuxNoEditor",
+        "MacNoEditor"
+    ],
+    "Plugins": [
+        { "Name": "CitySample", "Enabled": true },
+        { "Name": "Metahuman", "Enabled": true },
+        { "Name": "Niagara", "Enabled": true },
+        { "Name": "PythonScriptPlugin", "Enabled": true },
+        { "Name": "EditorScriptingUtilities", "Enabled": true },
+        { "Name": "Substance", "Enabled": false },
+        { "Name": "Verse", "Enabled": false }
+    ],
+    "EpicSampleNameHash": "00000000000000000000000000000000"
+}
