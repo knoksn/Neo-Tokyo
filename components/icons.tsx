@@ -73,6 +73,13 @@ export const DialogueIcon: React.FC = () => (
     </svg>
 );
 
+export const FactionIcon: React.FC = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M10 2a8 8 0 00-8 8c0 3.535 2.29 6.536 5.443 7.595A4.943 4.943 0 016 13.947V8.5a4.5 4.5 0 019 0v5.447c0 .48-.07.943-.2 1.382A8.002 8.002 0 0018 10a8 8 0 00-8-8z" />
+        <path d="M13.207 15.207a1 1 0 01-1.414 0L10 13.414l-1.793 1.793a1 1 0 01-1.414-1.414L8.586 12l-1.793-1.793a1 1 0 111.414-1.414L10 10.586l1.793-1.793a1 1 0 111.414 1.414L11.414 12l1.793 1.793a1 1 0 010 1.414z" />
+    </svg>
+);
+
 export const ScenarioIcon: React.FC = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
     <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h1.5a1.5 1.5 0 010 3H14a1 1 0 00-1 1v1.5a1.5 1.5 0 01-3 0V10a1 1 0 00-1-1H7.5a1.5 1.5 0 010-3H9a1 1 0 001-1V3.5zM10 12.5a1.5 1.5 0 013 0V13a1 1 0 001 1h1.5a1.5 1.5 0 010 3H14a1 1 0 00-1 1v1.5a1.5 1.5 0 01-3 0V16a1 1 0 00-1-1H7.5a1.5 1.5 0 010-3H9a1 1 0 001-1v-1.5z" />

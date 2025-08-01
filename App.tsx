@@ -5,16 +5,17 @@ import NpcGenerator from './components/NpcGenerator';
 import QuestGenerator from './components/QuestGenerator';
 import ArtPromptGenerator from './components/ArtPromptGenerator';
 import DialogueGenerator from './components/DialogueGenerator';
+import FactionGenerator from './components/FactionGenerator';
 import ScenarioGenerator from './components/ScenarioGenerator';
 import LoreGenerator from './components/LoreGenerator';
 import AiBehaviorGenerator from './components/AiBehaviorGenerator';
 import PlaytestingScenarioGenerator from './components/PlaytestingScenarioGenerator';
 import BlueprintGenerator from './components/BlueprintGenerator';
 import UeTransformer from './components/UeTransformer';
-import { Npc, Quest, Dialogue, Scenario, Lore, AiBehavior, PlaytestingScenario, Blueprint } from './services/geminiService';
-import { NpcIcon, QuestIcon, SparklesIcon, ArtIcon, DialogueIcon, ScenarioIcon, LoreIcon, AiBehaviorIcon, PlaytestIcon, BlueprintIcon, UeTransformerIcon, ExportIcon } from './components/icons';
+import { Npc, Quest, Dialogue, Faction, Scenario, Lore, AiBehavior, PlaytestingScenario, Blueprint } from './services/geminiService';
+import { NpcIcon, QuestIcon, SparklesIcon, ArtIcon, DialogueIcon, FactionIcon, ScenarioIcon, LoreIcon, AiBehaviorIcon, PlaytestIcon, BlueprintIcon, UeTransformerIcon, ExportIcon } from './components/icons';
 
-type ActiveTab = 'scene' | 'npc' | 'quest' | 'art' | 'dialogue' | 'scenario' | 'lore' | 'ai_behavior' | 'playtesting' | 'blueprint' | 'ue_transformer';
+type ActiveTab = 'scene' | 'npc' | 'quest' | 'art' | 'dialogue' | 'faction' | 'scenario' | 'lore' | 'ai_behavior' | 'playtesting' | 'blueprint' | 'ue_transformer';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>('scene');
@@ -24,7 +25,9 @@ const App: React.FC = () => {
   const [generatedNpc, setGeneratedNpc] = useState<Npc | null>(null);
   const [generatedQuest, setGeneratedQuest] = useState<Quest | null>(null);
   const [generatedArtPrompt, setGeneratedArtPrompt] = useState<string>('');
+  const [generatedImage, setGeneratedImage] = useState<string>('');
   const [generatedDialogue, setGeneratedDialogue] = useState<Dialogue | null>(null);
+  const [generatedFaction, setGeneratedFaction] = useState<Faction | null>(null);
   const [generatedBlueprint, setGeneratedBlueprint] = useState<Blueprint | null>(null);
   const [generatedScenario, setGeneratedScenario] = useState<Scenario | null>(null);
   const [generatedLore, setGeneratedLore] = useState<Lore | null>(null);
@@ -40,7 +43,9 @@ const App: React.FC = () => {
         npc: generatedNpc || null,
         quest: generatedQuest || null,
         artPrompt: generatedArtPrompt || null,
+        generatedImage: generatedImage || null,
         dialogue: generatedDialogue || null,
+        faction: generatedFaction || null,
         blueprint: generatedBlueprint || null,
         scenario: generatedScenario || null,
         lore: generatedLore || null,
@@ -114,6 +119,12 @@ const App: React.FC = () => {
               onClick={() => setActiveTab('dialogue')}
             />
             <TabButton
+              label="Faction"
+              icon={<FactionIcon />}
+              isActive={activeTab === 'faction'}
+              onClick={() => setActiveTab('faction')}
+            />
+            <TabButton
               label="Blueprint"
               icon={<BlueprintIcon />}
               isActive={activeTab === 'blueprint'}
@@ -156,8 +167,14 @@ const App: React.FC = () => {
           {activeTab === 'scene' && <SceneGenerator generatedScene={generatedScene} setGeneratedScene={setGeneratedScene} />}
           {activeTab === 'npc' && <NpcGenerator generatedNpc={generatedNpc} setGeneratedNpc={setGeneratedNpc} />}
           {activeTab === 'quest' && <QuestGenerator generatedQuest={generatedQuest} setGeneratedQuest={setGeneratedQuest} />}
-          {activeTab === 'art' && <ArtPromptGenerator generatedPrompt={generatedArtPrompt} setGeneratedPrompt={setGeneratedArtPrompt} />}
+          {activeTab === 'art' && <ArtPromptGenerator 
+              generatedPrompt={generatedArtPrompt} 
+              setGeneratedPrompt={setGeneratedArtPrompt}
+              generatedImage={generatedImage}
+              setGeneratedImage={setGeneratedImage}
+            />}
           {activeTab === 'dialogue' && <DialogueGenerator generatedDialogue={generatedDialogue} setGeneratedDialogue={setGeneratedDialogue} />}
+          {activeTab === 'faction' && <FactionGenerator generatedFaction={generatedFaction} setGeneratedFaction={setGeneratedFaction} />}
           {activeTab === 'blueprint' && <BlueprintGenerator generatedBlueprint={generatedBlueprint} setGeneratedBlueprint={setGeneratedBlueprint} />}
           {activeTab === 'ue_transformer' && <UeTransformer />}
           {activeTab === 'scenario' && <ScenarioGenerator generatedScenario={generatedScenario} setGeneratedScenario={setGeneratedScenario} />}

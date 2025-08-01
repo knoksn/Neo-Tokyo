@@ -348,6 +348,68 @@ export const generateDialogue = async (npcRole: string, situation: string): Prom
     }
 };
 
+export interface Faction {
+    name: string;
+    ideology: string;
+    headquarters: string;
+    hierarchy: string;
+    public_agenda: string;
+    secret_agenda: string;
+    relationship_with_maya: string;
+}
+
+const factionSchema = {
+    type: Type.OBJECT,
+    properties: {
+        name: { type: Type.STRING, description: "The name of the faction." },
+        ideology: { type: Type.STRING, description: "The core belief system or philosophy that drives the faction." },
+        headquarters: { type: Type.STRING, description: "A description of the faction's base of operations." },
+        hierarchy: { type: Type.STRING, description: "The organizational structure and key roles within the faction." },
+        public_agenda: { type: Type.STRING, description: "What the faction claims to be working towards." },
+        secret_agenda: { type: Type.STRING, description: "The faction's true, hidden goals." },
+        relationship_with_maya: { type: Type.STRING, description: "The faction's initial stance towards the protagonist, Maya Chen (e.g., ally, enemy, potential client, rival)." }
+    },
+    required: ["name", "ideology", "headquarters", "hierarchy", "public_agenda", "secret_agenda", "relationship_with_maya"],
+};
+
+export const generateFaction = async (): Promise<Faction> => {
+    const model = "gemini-2.5-flash";
+    const prompt = `
+        You are a lead writer for the AAA video game “Neo-Tokyo Noir: Chrome and Shadows.”
+        Your task is to generate a complete, unique, and compelling faction that fits the game's dark, cyberpunk noir setting. These factions are powerful groups vying for control and influence in the fractured reality of Neo-Tokyo.
+
+        **FACTION REQUIREMENTS:**
+        1.  **Name:** A cool, evocative name that reflects their identity (e.g., The Onyx Syndicate, Children of the Glitch, Chronos Wardens).
+        2.  **Ideology:** What is their core philosophy? Are they anarchists, corporate purists, transhumanist zealots, digital preservationists, or something else entirely?
+        3.  **Headquarters:** Describe their base of operations. Is it a high-tech skyscraper, a hidden network of tunnels, a virtual reality space, or a repurposed industrial relic?
+        4.  **Hierarchy:** Briefly describe their structure. Is it a rigid corporate ladder, a fluid collective, a council of elders, or led by a single charismatic figure?
+        5.  **Agendas (Public & Secret):** What do they tell the world they want, and what do they *really* want? The secret agenda should be a potential plot driver.
+        6.  **Relationship with Maya Chen:** What is their starting relationship with the protagonist? Are they a direct threat, a potential employer, a rival organization, or an unpredictable neutral party?
+
+        **INSTRUCTIONS:**
+        *   Be creative and ensure the faction feels like a natural part of a cyberpunk noir world.
+        *   Generate the faction details strictly following the provided JSON schema. Do not add any extra text or explanations outside of the JSON structure.
+    `;
+
+    try {
+        const response: GenerateContentResponse = await ai.models.generateContent({
+            model: model,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: factionSchema,
+            }
+        });
+        
+        const jsonText = response.text.trim();
+        return JSON.parse(jsonText) as Faction;
+
+    } catch (error) {
+        console.error("Error generating Faction from Gemini:", error);
+        throw new Error("Failed to communicate with the AI model to generate Faction.");
+    }
+};
+
 export interface Scenario {
   title: string;
   environment: string;
@@ -723,7 +785,7 @@ const blueprintSchema = {
           id: { type: Type.INTEGER, description: "A unique integer ID for this node, starting from 1." },
           name: { type: Type.STRING, description: "The name of the Blueprint node, e.g., 'Event BeginPlay', 'Branch', 'Play Sound at Location'." },
           type: { type: Type.STRING, description: "The category of the node (e.g., 'Event', 'Function Call', 'Flow Control', 'Variable', 'Action', 'Macro')." },
-          description: { type: Type.STRING, description: "A detailed explanation of what this node does and its configuration (e.g., which variable it gets/sets, condition for a Branch)." },
+          description: { type: Type.STRING, description: "A detailed explanation of what this node does and how it should be configured (e.g., which variable it gets/sets, condition for a Branch)." },
           connections: {
             type: Type.ARRAY,
             description: "An array of node IDs that this node's execution pin connects to.",
@@ -776,3 +838,30 @@ export const generateBlueprint = async (logic: string): Promise<Blueprint> => {
         throw new Error("Failed to communicate with the AI model to generate Blueprint.");
     }
 };
+
+
+export const generateImage = async (prompt: string): Promise<string> => {
+    const model = 'imagen-3.0-generate-002';
+
+    try {
+        const response = await ai.models.generateImages({
+            model: model,
+            prompt: prompt,
+            config: {
+                numberOfImages: 1,
+                outputMimeType: 'image/jpeg',
+                aspectRatio: '16:9', // Cinematic ratio
+            },
+        });
+
+        if (response.generatedImages && response.generatedImages.length > 0) {
+            return response.generatedImages[0].image.imageBytes;
+        } else {
+            throw new Error("No image was generated by the API.");
+        }
+
+    } catch (error) {
+        console.error("Error generating image from Gemini:", error);
+        throw new Error("Failed to communicate with the AI model to generate the image.");
+    }
+}

@@ -1,6 +1,7 @@
+
 {
   "name": "Neo-Tokyo Noir: World-Building Suite",
-  "description": "A suite of AI-powered tools to craft cinematic scenes, unique NPCs, compelling quests, branching dialogue, detailed art prompts for Unreal Engine 5.6, dynamic scenarios, rich lore, adaptive AI behaviors, Unreal Engine Blueprint logic, and an Unreal Engine Transformer for your assets for 'Neo-Tokyo Noir: Chrome and Shadows.'",
+  "description": "A suite of AI-powered tools to craft cinematic scenes, unique NPCs, compelling quests, branching dialogue, influential factions, detailed art prompts for Unreal Engine 5.6, dynamic scenarios, rich lore, adaptive AI behaviors, Unreal Engine Blueprint logic, and an Unreal Engine Transformer for your assets for 'Neo-Tokyo Noir: Chrome and Shadows.'",
   "requestFramePermissions": [],
   "prompt": ""
 }
