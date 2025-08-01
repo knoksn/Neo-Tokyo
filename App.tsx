@@ -1,20 +1,9 @@
-
 import React, { useState } from 'react';
 import StoryboardGenerator from './components/StoryboardGenerator';
 import LocationGenerator from './components/SceneGenerator';
 import CharacterProfileGenerator from './components/CharacterProfileGenerator';
 import CharacterDossierGenerator from './components/CharacterDossierGenerator';
-import NpcGenerator from './components/NpcGenerator';
-import QuestGenerator from './components/QuestGenerator';
 import ArtPromptGenerator from './components/ArtPromptGenerator';
-import DialogueGenerator from './components/DialogueGenerator';
-import FactionGenerator from './components/FactionGenerator';
-import ScenarioGenerator from './components/ScenarioGenerator';
-import LoreGenerator from './components/LoreGenerator';
-import AiBehaviorGenerator from './components/AiBehaviorGenerator';
-import BlueprintGenerator from './components/BlueprintGenerator';
-import PlaytestingScenarioGenerator from './components/PlaytestingScenarioGenerator';
-import UeTransformer from './components/UeTransformer';
 import DlcCharacterGenerator from './components/DlcCharacterGenerator';
 import RemixChallengeGenerator from './components/ArtistChallengeGenerator';
 import MerchGenerator from './components/MerchGenerator';
@@ -36,16 +25,16 @@ import DialogueTreeGenerator from './components/DialogueTreeGenerator';
 import ProjectBlueprintGenerator from './components/ProjectBlueprintGenerator';
 import CreativeBatchGenerator from './components/CreativeBatchGenerator';
 import WorkflowGenerator from './components/WorkflowGenerator';
-import Paywall from './components/Paywall';
+import EnterprisePlan from './components/EnterprisePlan';
 import AiGuideWidget from './components/AiGuideWidget';
-import { Storyboard, LocationSnippet, CharacterProfile, Npc, Quest, Dialogue, Faction, Scenario, Lore, AiBehavior, Blueprint, PlaytestingScenario, DlcCharacter, RemixChallenge, MerchIdeas, GeneratedPrompt, InteractiveScene, CharacterDossier, GlossaryEntry, SceneMatrixEntry, BatchCharacterProfile, TimelineSplit, BatchLocationProfile, DialogueTree, ProjectBlueprint, CreativeBatch, Workflow } from './services/geminiService';
+import { Storyboard, LocationSnippet, CharacterProfile, Dialogue, DlcCharacter, RemixChallenge, MerchIdeas, GeneratedPrompt, InteractiveScene, CharacterDossier, GlossaryEntry, SceneMatrixEntry, BatchCharacterProfile, TimelineSplit, BatchLocationProfile, DialogueTree, ProjectBlueprint, CreativeBatch, Workflow } from './services/geminiService';
 import { toSceneMatrixMarkdown, toBatchCharacterProfileMarkdown, toTimelineSplitMarkdown, toBatchLocationProfileMarkdown, toDialogueTreeMarkdown, toProjectBlueprintMarkdown, toCreativeBatchMarkdown, toWorkflowMarkdown } from './services/markdownService';
-import { ExportIcon, SparklesIcon, LocationIcon, CharacterIcon, NpcIcon, QuestIcon, DialogueIcon, ArtIcon, FactionIcon, ScenarioIcon, LoreIcon, AiBehaviorIcon, BlueprintIcon, PlaytestIcon, UeTransformerIcon, DlcIcon, ArtistChallengeIcon, MerchIcon, MatrixIcon, DossierIcon, BookmarkIcon, LocationsIcon, KeySceneIcon, InteractiveIcon, DlcShowcaseIcon, GlossaryIcon, CastIcon, CreditsIcon, HashtagIcon, SceneMatrixIcon, BatchCharacterIcon, TimelineSplitIcon, BatchLocationIcon, DialogueTreeIcon, ProjectBlueprintIcon, CreativeBatchIcon, WorkflowIcon, PaywallIcon } from './components/icons';
+import { ExportIcon, SparklesIcon, LocationIcon, CharacterIcon, DialogueIcon, ArtIcon, DlcIcon, ArtistChallengeIcon, MerchIcon, MatrixIcon, DossierIcon, BookmarkIcon, LocationsIcon, KeySceneIcon, InteractiveIcon, DlcShowcaseIcon, GlossaryIcon, CastIcon, CreditsIcon, HashtagIcon, SceneMatrixIcon, BatchCharacterIcon, TimelineSplitIcon, BatchLocationIcon, DialogueTreeIcon, ProjectBlueprintIcon, CreativeBatchIcon, WorkflowIcon, EnterprisePlanIcon } from './components/icons';
 
-type GeneratorType = 'Paywall' | 'Workflow' | 'Creative Batch' | 'Project Blueprint' | 'Storyboard' | 'Scene Matrix' | 'Character Batch' | 'Location Batch' | 'Timeline Split' | 'Dialogue Tree' | 'Interactive Scene' | 'Prompt Matrix' | 'DLC Character' | 'Remix Challenge' | 'Merch Ideas' | 'Location' | 'Character Profile' | 'Character Dossier' | 'Glossary' | 'Hashtag' | 'Cast' | 'Locations' | 'Key Scenes' | 'DLC Showcase' | 'Credits' | 'NPC' | 'Quest' | 'Dialogue' | 'Art Prompt' | 'Canon Prompts' | 'Faction' | 'Combat Scenario' | 'Lore' | 'AI Behavior' | 'UE Blueprint' | 'QA Script' | 'UE Transformer';
+type GeneratorType = 'Enterprise Plan' | 'Workflow' | 'Creative Batch' | 'Project Blueprint' | 'Storyboard' | 'Scene Matrix' | 'Character Batch' | 'Location Batch' | 'Timeline Split' | 'Dialogue Tree' | 'Interactive Scene' | 'Character Dossier' | 'Location' | 'Glossary' | 'Art Prompt' | 'Prompt Matrix' | 'DLC Character' | 'Remix Challenge' | 'Merch Ideas' | 'Character Profile' | 'Cast' | 'Canon Prompts' | 'Locations' | 'Key Scenes' | 'DLC Showcase' | 'Hashtag' | 'Credits';
 
 const TABS: { name: GeneratorType, icon: React.FC }[] = [
-    { name: 'Paywall', icon: PaywallIcon },
+    { name: 'Enterprise Plan', icon: EnterprisePlanIcon },
     { name: 'Workflow', icon: WorkflowIcon },
     { name: 'Creative Batch', icon: CreativeBatchIcon },
     { name: 'Project Blueprint', icon: ProjectBlueprintIcon },
@@ -65,16 +54,6 @@ const TABS: { name: GeneratorType, icon: React.FC }[] = [
     { name: 'Remix Challenge', icon: ArtistChallengeIcon },
     { name: 'Merch Ideas', icon: MerchIcon },
     { name: 'Character Profile', icon: CharacterIcon },
-    { name: 'NPC', icon: NpcIcon },
-    { name: 'Quest', icon: QuestIcon },
-    { name: 'Dialogue', icon: DialogueIcon },
-    { name: 'Faction', icon: FactionIcon },
-    { name: 'Combat Scenario', icon: ScenarioIcon },
-    { name: 'Lore', icon: LoreIcon },
-    { name: 'AI Behavior', icon: AiBehaviorIcon },
-    { name: 'UE Blueprint', icon: BlueprintIcon },
-    { name: 'QA Script', icon: PlaytestIcon },
-    { name: 'UE Transformer', icon: UeTransformerIcon },
     { name: 'Cast', icon: CastIcon },
     { name: 'Canon Prompts', icon: BookmarkIcon },
     { name: 'Locations', icon: LocationsIcon },
@@ -85,7 +64,8 @@ const TABS: { name: GeneratorType, icon: React.FC }[] = [
 ];
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<GeneratorType>('Paywall');
+  const [activeTab, setActiveTab] = useState<GeneratorType>('Enterprise Plan');
+  const [prefilledQuestion, setPrefilledQuestion] = useState('');
   
   // State for all generators
   const [generatedWorkflow, setGeneratedWorkflow] = useState<Workflow | null>(null);
@@ -103,17 +83,9 @@ const App: React.FC = () => {
   const [generatedProfile, setGeneratedProfile] = useState<CharacterProfile | null>(null);
   const [generatedDossier, setGeneratedDossier] = useState<CharacterDossier | null>(null);
   const [generatedGlossaryEntry, setGeneratedGlossaryEntry] = useState<GlossaryEntry | null>(null);
-  const [generatedNpc, setGeneratedNpc] = useState<Npc | null>(null);
-  const [generatedQuest, setGeneratedQuest] = useState<Quest | null>(null);
   const [generatedDialogue, setGeneratedDialogue] = useState<Dialogue | null>(null);
   const [generatedArtPrompt, setGeneratedArtPrompt] = useState<string>('');
   const [generatedImage, setGeneratedImage] = useState<string>('');
-  const [generatedFaction, setGeneratedFaction] = useState<Faction | null>(null);
-  const [generatedScenario, setGeneratedScenario] = useState<Scenario | null>(null);
-  const [generatedLore, setGeneratedLore] = useState<Lore | null>(null);
-  const [generatedAiBehavior, setGeneratedAiBehavior] = useState<AiBehavior | null>(null);
-  const [generatedBlueprint, setGeneratedBlueprint] = useState<Blueprint | null>(null);
-  const [generatedQaScript, setGeneratedQaScript] = useState<PlaytestingScenario | null>(null);
   const [generatedDlcCharacter, setGeneratedDlcCharacter] = useState<DlcCharacter | null>(null);
   const [generatedArtistChallenge, setGeneratedArtistChallenge] = useState<RemixChallenge | null>(null);
   const [generatedMerchIdeas, setGeneratedMerchIdeas] = useState<MerchIdeas | null>(null);
@@ -133,11 +105,9 @@ const App: React.FC = () => {
     document.body.appendChild(a);
     a.style.display = 'none';
 
-    let blob: Blob;
-    let url: string;
-    let fileName: string = 'neo-tokyo-export.json';
-    let mimeType: string = 'application/json';
     let dataString: string = '';
+    let fileName: string = `neo-tokyo-export.txt`;
+    let mimeType: string = 'text/plain';
 
     switch(activeTab) {
         case 'Workflow':
@@ -159,17 +129,6 @@ const App: React.FC = () => {
                 fileName = `neo-tokyo-project-blueprint.md`;
                 mimeType = 'text/markdown;charset=utf-8;';
                 dataString = toProjectBlueprintMarkdown(generatedProjectBlueprint);
-            }
-            break;
-        case 'Storyboard':
-            if (generatedStoryboard) {
-                const exportData = {
-                  projectName: `Neo-Tokyo Noir Storyboard: ${generatedStoryboard.title}`,
-                  exportDate: new Date().toISOString(),
-                  asset: generatedStoryboard,
-                };
-                fileName = `neo-tokyo-storyboard-${generatedStoryboard.title.toLowerCase().replace(/\s+/g, '-')}.json`;
-                dataString = JSON.stringify(exportData, null, 2);
             }
             break;
         case 'Prompt Matrix':
@@ -217,8 +176,8 @@ const App: React.FC = () => {
     }
 
     if (dataString) {
-        blob = new Blob([dataString], { type: mimeType });
-        url = URL.createObjectURL(blob);
+        const blob = new Blob([dataString], { type: mimeType });
+        const url = URL.createObjectURL(blob);
         a.href = url;
         a.download = fileName;
         a.click();
@@ -230,99 +189,48 @@ const App: React.FC = () => {
 
   const renderActiveGenerator = () => {
     switch(activeTab) {
-      case 'Paywall':
-        return <Paywall />;
-      case 'Workflow':
-        return <WorkflowGenerator generatedWorkflow={generatedWorkflow} setGeneratedWorkflow={setGeneratedWorkflow} />;
-      case 'Creative Batch':
-        return <CreativeBatchGenerator generatedBatch={generatedCreativeBatch} setGeneratedBatch={setGeneratedCreativeBatch} />;
-      case 'Project Blueprint':
-        return <ProjectBlueprintGenerator generatedBlueprint={generatedProjectBlueprint} setGeneratedBlueprint={setGeneratedProjectBlueprint} />;
-      case 'Storyboard':
-        return <StoryboardGenerator generatedStoryboard={generatedStoryboard} setGeneratedStoryboard={setGeneratedStoryboard} />;
-      case 'Interactive Scene':
-        return <InteractiveSceneGenerator generatedScene={generatedInteractiveScene} setGeneratedScene={setGeneratedInteractiveScene} />;
-      case 'Scene Matrix':
-        return <SceneMatrixGenerator generatedEntries={generatedSceneMatrix} setGeneratedEntries={setGeneratedSceneMatrix} />;
-      case 'Character Batch':
-        return <CharacterBatchGenerator generatedProfiles={generatedCharacterBatch} setGeneratedProfiles={setGeneratedCharacterBatch} />;
-      case 'Location Batch':
-        return <LocationBatchGenerator generatedProfiles={generatedLocationBatch} setGeneratedProfiles={setGeneratedLocationBatch} />;
-      case 'Timeline Split':
-        return <TimelineSplitGenerator generatedSplit={generatedTimelineSplit} setGeneratedSplit={setGeneratedTimelineSplit} />;
-      case 'Dialogue Tree':
-        return <DialogueTreeGenerator generatedTree={generatedDialogueTree} setGeneratedTree={setGeneratedDialogueTree} />;
-      case 'Prompt Matrix':
-        return <PromptMatrixGenerator generatedPrompts={generatedPrompts} setGeneratedPrompts={setGeneratedPrompts} />;
-      case 'DLC Character':
-        return <DlcCharacterGenerator generatedDlcCharacter={generatedDlcCharacter} setGeneratedDlcCharacter={setGeneratedDlcCharacter} />;
-      case 'Remix Challenge':
-        return <RemixChallengeGenerator generatedChallenge={generatedArtistChallenge} setGeneratedChallenge={setGeneratedArtistChallenge} />;
-      case 'Merch Ideas':
-        return <MerchGenerator generatedMerch={generatedMerchIdeas} setGeneratedMerch={setGeneratedMerchIdeas} />;
-      case 'DLC Showcase':
-        return <DlcShowcaseDisplay />;
-      case 'Location':
-        return <LocationGenerator generatedLocation={generatedLocation} setGeneratedLocation={setGeneratedLocation} />;
-      case 'Character Profile':
-        return <CharacterProfileGenerator generatedProfile={generatedProfile} setGeneratedProfile={setGeneratedProfile} />;
-      case 'Character Dossier':
-        return <CharacterDossierGenerator generatedDossier={generatedDossier} setGeneratedDossier={setGeneratedDossier} />;
-      case 'Glossary':
-        return <GlossaryGenerator generatedEntry={generatedGlossaryEntry} setGeneratedEntry={setGeneratedGlossaryEntry} />;
-      case 'Cast':
-        return <CastDisplay />;
-      case 'Locations':
-        return <LocationsDisplay />;
-      case 'Key Scenes':
-        return <KeyScenesDisplay />;
-      case 'Credits':
-        return <CreditsDisplay />;
-      case 'Hashtag':
-        return <HashtagDisplay />;
-      case 'NPC':
-        return <NpcGenerator generatedNpc={generatedNpc} setGeneratedNpc={setGeneratedNpc} />;
-      case 'Quest':
-        return <QuestGenerator generatedQuest={generatedQuest} setGeneratedQuest={setGeneratedQuest} />;
-      case 'Dialogue':
-        return <DialogueGenerator generatedDialogue={generatedDialogue} setGeneratedDialogue={setGeneratedDialogue} />;
-      case 'Art Prompt':
-        return <ArtPromptGenerator generatedPrompt={generatedArtPrompt} setGeneratedPrompt={setGeneratedArtPrompt} generatedImage={generatedImage} setGeneratedImage={setGeneratedImage} />;
-      case 'Canon Prompts':
-        return <CanonPromptsDisplay />;
-      case 'Faction':
-        return <FactionGenerator generatedFaction={generatedFaction} setGeneratedFaction={setGeneratedFaction} />;
-      case 'Combat Scenario':
-        return <ScenarioGenerator generatedScenario={generatedScenario} setGeneratedScenario={setGeneratedScenario} />;
-      case 'Lore':
-        return <LoreGenerator generatedLore={generatedLore} setGeneratedLore={setGeneratedLore} />;
-      case 'AI Behavior':
-        return <AiBehaviorGenerator generatedAiBehavior={generatedAiBehavior} setGeneratedAiBehavior={setGeneratedAiBehavior} />;
-      case 'UE Blueprint':
-        return <BlueprintGenerator generatedBlueprint={generatedBlueprint} setGeneratedBlueprint={setGeneratedBlueprint} />;
-      case 'QA Script':
-        return <PlaytestingScenarioGenerator generatedScenario={generatedQaScript} setGeneratedScenario={setGeneratedQaScript} />;
-      case 'UE Transformer':
-        return <UeTransformer />;
+      case 'Enterprise Plan': return <EnterprisePlan setPrefilledQuestion={setPrefilledQuestion} />;
+      case 'Workflow': return <WorkflowGenerator generatedWorkflow={generatedWorkflow} setGeneratedWorkflow={setGeneratedWorkflow} />;
+      case 'Creative Batch': return <CreativeBatchGenerator generatedBatch={generatedCreativeBatch} setGeneratedBatch={setGeneratedCreativeBatch} />;
+      case 'Project Blueprint': return <ProjectBlueprintGenerator generatedBlueprint={generatedProjectBlueprint} setGeneratedBlueprint={setGeneratedProjectBlueprint} />;
+      case 'Storyboard': return <StoryboardGenerator generatedStoryboard={generatedStoryboard} setGeneratedStoryboard={setGeneratedStoryboard} />;
+      case 'Interactive Scene': return <InteractiveSceneGenerator generatedScene={generatedInteractiveScene} setGeneratedScene={setGeneratedInteractiveScene} />;
+      case 'Scene Matrix': return <SceneMatrixGenerator generatedEntries={generatedSceneMatrix} setGeneratedEntries={setGeneratedSceneMatrix} />;
+      case 'Character Batch': return <CharacterBatchGenerator generatedProfiles={generatedCharacterBatch} setGeneratedProfiles={setGeneratedCharacterBatch} />;
+      case 'Location Batch': return <LocationBatchGenerator generatedProfiles={generatedLocationBatch} setGeneratedProfiles={setGeneratedLocationBatch} />;
+      case 'Timeline Split': return <TimelineSplitGenerator generatedSplit={generatedTimelineSplit} setGeneratedSplit={setGeneratedTimelineSplit} />;
+      case 'Dialogue Tree': return <DialogueTreeGenerator generatedTree={generatedDialogueTree} setGeneratedTree={setGeneratedDialogueTree} />;
+      case 'Prompt Matrix': return <PromptMatrixGenerator generatedPrompts={generatedPrompts} setGeneratedPrompts={setGeneratedPrompts} />;
+      case 'DLC Character': return <DlcCharacterGenerator generatedDlcCharacter={generatedDlcCharacter} setGeneratedDlcCharacter={setGeneratedDlcCharacter} />;
+      case 'Remix Challenge': return <RemixChallengeGenerator generatedChallenge={generatedArtistChallenge} setGeneratedChallenge={setGeneratedArtistChallenge} />;
+      case 'Merch Ideas': return <MerchGenerator generatedMerch={generatedMerchIdeas} setGeneratedMerch={setGeneratedMerchIdeas} />;
+      case 'Location': return <LocationGenerator generatedLocation={generatedLocation} setGeneratedLocation={setGeneratedLocation} />;
+      case 'Character Profile': return <CharacterProfileGenerator generatedProfile={generatedProfile} setGeneratedProfile={setGeneratedProfile} />;
+      case 'Character Dossier': return <CharacterDossierGenerator generatedDossier={generatedDossier} setGeneratedDossier={setGeneratedDossier} />;
+      case 'Glossary': return <GlossaryGenerator generatedEntry={generatedGlossaryEntry} setGeneratedEntry={setGeneratedGlossaryEntry} />;
+      case 'Art Prompt': return <ArtPromptGenerator generatedPrompt={generatedArtPrompt} setGeneratedPrompt={setGeneratedArtPrompt} generatedImage={generatedImage} setGeneratedImage={setGeneratedImage} />;
+      // Static Displays
+      case 'DLC Showcase': return <DlcShowcaseDisplay />;
+      case 'Cast': return <CastDisplay />;
+      case 'Locations': return <LocationsDisplay />;
+      case 'Key Scenes': return <KeyScenesDisplay />;
+      case 'Credits': return <CreditsDisplay />;
+      case 'Hashtag': return <HashtagDisplay />;
+      case 'Canon Prompts': return <CanonPromptsDisplay />;
       default:
-        return null;
+        // Fallback for any conceptual/unimplemented tabs that were removed
+        return <div className="text-center text-gray-400 p-8">Select a tool from the navigation bar.</div>;
     }
   }
 
-  const showExportButton = (activeTab === 'Workflow' && generatedWorkflow)
-    || (activeTab === 'Creative Batch' && generatedCreativeBatch)
-    || (activeTab === 'Project Blueprint' && generatedProjectBlueprint)
-    || (activeTab === 'Storyboard' && generatedStoryboard) 
-    || (activeTab === 'Prompt Matrix' && generatedPrompts.length > 0)
-    || (activeTab === 'Scene Matrix' && generatedSceneMatrix.length > 0)
-    || (activeTab === 'Character Batch' && generatedCharacterBatch.length > 0)
-    || (activeTab === 'Location Batch' && generatedLocationBatch.length > 0)
-    || (activeTab === 'Timeline Split' && generatedTimelineSplit)
-    || (activeTab === 'Dialogue Tree' && generatedDialogueTree);
+  const showExportButton = [
+    'Workflow', 'Creative Batch', 'Project Blueprint', 'Storyboard', 'Prompt Matrix', 
+    'Scene Matrix', 'Character Batch', 'Location Batch', 'Timeline Split', 'Dialogue Tree'
+  ].includes(activeTab);
 
   return (
     <div className="min-h-screen text-gray-200 font-sans p-4 sm:p-6 lg:p-8 flex flex-col items-center">
-      <div className="w-full max-w-6xl mx-auto">
+      <div className="w-full max-w-7xl mx-auto">
         <header className="text-center mb-8 relative">
           <h1 className="text-4xl sm:text-5xl font-bold text-cyan-400 tracking-wider [text-shadow:_0_0_10px_theme(colors.cyan.500)]">
             Neo-Tokyo Noir
@@ -336,7 +244,7 @@ const App: React.FC = () => {
                     aria-label="Export Project"
                 >
                     <ExportIcon />
-                    <span className="ml-2 text-sm hidden sm:inline">Export Project</span>
+                    <span className="ml-2 text-sm hidden sm:inline">Export</span>
                 </button>
               </div>
            )}
@@ -367,7 +275,7 @@ const App: React.FC = () => {
           {renderActiveGenerator()}
         </main>
       </div>
-      <AiGuideWidget />
+      <AiGuideWidget prefilledQuestion={prefilledQuestion} setPrefilledQuestion={setPrefilledQuestion} />
     </div>
   );
 };

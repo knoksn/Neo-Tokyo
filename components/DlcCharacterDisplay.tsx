@@ -9,6 +9,13 @@ interface DlcCharacterDisplayProps {
   isLoading: boolean;
 }
 
+const InfoBlock: React.FC<{ title: string; content: string }> = ({ title, content }) => (
+    <div>
+        <h3 className="text-xl font-bold text-cyan-400 mb-2">{title}</h3>
+        <p className="text-gray-300 whitespace-pre-wrap">{content}</p>
+    </div>
+);
+
 const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter, isLoading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -30,6 +37,7 @@ const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter,
       setTimeout(() => setIsArtPromptCopied(false), 2500);
     }
   }, [dlcCharacter]);
+
 
   if (isLoading || !dlcCharacter) {
     return null;
@@ -53,10 +61,10 @@ const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter,
           </button>
         </header>
         
-        <div className="space-y-4">
-          <InfoBlock title="Intro Scene" content={dlcCharacter.intro_scene} />
+        <div className="border-t border-slate-700/50 pt-6">
+            <InfoBlock title="Intro Scene" content={dlcCharacter.intro_scene} />
         </div>
-        
+
         <div className="border-t border-slate-700/50 pt-6">
             <h3 className="text-xl font-bold text-cyan-400 mb-2">AI Art Prompt</h3>
             <div className="relative">
@@ -74,15 +82,12 @@ const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter,
         </div>
 
         <div className="border-t border-slate-700/50 pt-6">
-          <h3 className="font-bold text-xl text-cyan-400 mb-1">Community Remix Challenge</h3>
-          <blockquote className="border-l-4 border-cyan-500 pl-4 italic text-gray-300">
-              <p>{dlcCharacter.community_challenge}</p>
-          </blockquote>
+            <InfoBlock title="Community Remix Challenge" content={dlcCharacter.community_challenge} />
         </div>
-
+        
         <div className="border-t border-slate-700/50 pt-6">
           <h3 className="font-bold text-xl text-cyan-400 mb-1">Dialogue Sample</h3>
-          <blockquote className="border-l-4 border-cyan-500 pl-4 italic text-gray-300">
+          <blockquote className="border-l-4 border-cyan-500 pl-4 italic text-gray-300 text-lg">
               <p>"{dlcCharacter.dialogue_sample}"</p>
           </blockquote>
         </div>
@@ -117,17 +122,5 @@ const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter,
     </>
   );
 };
-
-interface InfoBlockProps {
-    title: string;
-    content: string;
-}
-
-const InfoBlock: React.FC<InfoBlockProps> = ({ title, content }) => (
-    <div>
-        <h3 className="text-xl font-bold text-cyan-400 mb-2">{title}</h3>
-        <p className="text-gray-300 whitespace-pre-wrap">{content}</p>
-    </div>
-);
 
 export default DlcCharacterDisplay;

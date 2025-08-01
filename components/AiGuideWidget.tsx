@@ -9,7 +9,12 @@ interface ChatMessage {
     text: string;
 }
 
-const AiGuideWidget: React.FC = () => {
+interface AiGuideWidgetProps {
+    prefilledQuestion: string;
+    setPrefilledQuestion: (question: string) => void;
+}
+
+const AiGuideWidget: React.FC<AiGuideWidgetProps> = ({ prefilledQuestion, setPrefilledQuestion }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [msg, setMsg] = useState('');
   const [chat, setChat] = useState<ChatMessage[]>([
@@ -17,6 +22,8 @@ const AiGuideWidget: React.FC = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const isProcessingPrefilled = useRef(false);
+
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -26,17 +33,16 @@ const AiGuideWidget: React.FC = () => {
     scrollToBottom();
   }, [chat]);
 
-  const sendMsg = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!msg.trim() || isLoading) return;
+  const sendQuery = async (query: string) => {
+    if (!query.trim() || isLoading) return;
 
-    const userMessage: ChatMessage = { from: 'user', text: msg };
+    const userMessage: ChatMessage = { from: 'user', text: query };
     setChat(prevChat => [...prevChat, userMessage]);
     setMsg('');
     setIsLoading(true);
 
     try {
-      const reply = await askAiGuide(msg, [...chat, userMessage]);
+      const reply = await askAiGuide(query, [...chat, userMessage]);
       setChat(prevChat => [...prevChat, { from: 'ai', text: reply }]);
     } catch (error) {
       console.error(error);
@@ -44,6 +50,23 @@ const AiGuideWidget: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
+      if (prefilledQuestion && !isProcessingPrefilled.current) {
+          isProcessingPrefilled.current = true;
+          setIsOpen(true);
+          sendQuery(prefilledQuestion);
+          setPrefilledQuestion('');
+          setTimeout(() => {
+            isProcessingPrefilled.current = false;
+          }, 1000);
+      }
+  }, [prefilledQuestion, setPrefilledQuestion, sendQuery]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendQuery(msg);
   };
 
   return (
@@ -72,7 +95,7 @@ const AiGuideWidget: React.FC = () => {
                  )}
                 <div ref={chatEndRef} />
               </div>
-              <form onSubmit={sendMsg} className="p-2 border-t border-cyan-500/30 flex">
+              <form onSubmit={handleSubmit} className="p-2 border-t border-cyan-500/30 flex">
                 <input
                   value={msg}
                   onChange={e => setMsg(e.target.value)}
