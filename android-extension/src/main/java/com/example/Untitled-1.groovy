@@ -27,3 +27,6 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
 }
 // ...existing code...
+<resources>
+    <string name="app_name">Android Extension</string>
+</resources>
