@@ -1,40 +1,49 @@
 
 import React, { useState, useCallback } from 'react';
-import { LocationSnippet } from '../services/geminiService';
-import { toLocationSnippetMarkdown } from '../services/markdownService';
+import { DlcCharacter } from '../services/geminiService';
+import { toDlcCharacterMarkdown } from '../services/markdownService';
 import Modal from './Modal';
 import { GithubIcon, CopyIcon, CheckIcon } from './icons';
 
-interface LocationDisplayProps {
-  snippet: LocationSnippet | null;
+interface DlcCharacterDisplayProps {
+  dlcCharacter: DlcCharacter | null;
   isLoading: boolean;
 }
 
-const LocationDisplay: React.FC<LocationDisplayProps> = ({ snippet, isLoading }) => {
+const DlcCharacterDisplay: React.FC<DlcCharacterDisplayProps> = ({ dlcCharacter, isLoading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isArtPromptCopied, setIsArtPromptCopied] = useState(false);
 
-  const handleCopy = useCallback(() => {
-    if (snippet) {
-      const markdown = toLocationSnippetMarkdown(snippet);
+  const handleModalCopy = useCallback(() => {
+    if (dlcCharacter) {
+      const markdown = toDlcCharacterMarkdown(dlcCharacter);
       navigator.clipboard.writeText(markdown);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);
     }
-  }, [snippet]);
+  }, [dlcCharacter]);
+  
+  const handleArtPromptCopy = useCallback(() => {
+    if (dlcCharacter) {
+      navigator.clipboard.writeText(dlcCharacter.art_prompt);
+      setIsArtPromptCopied(true);
+      setTimeout(() => setIsArtPromptCopied(false), 2500);
+    }
+  }, [dlcCharacter]);
 
-  if (isLoading || !snippet) {
+  if (isLoading || !dlcCharacter) {
     return null;
   }
 
-  const markdownContent = toLocationSnippetMarkdown(snippet);
+  const markdownContent = toDlcCharacterMarkdown(dlcCharacter);
 
   return (
     <>
       <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 mt-6 shadow-lg shadow-cyan-500/10 animate-fade-in space-y-6">
         <header className="relative">
           <h2 className="text-3xl font-bold text-cyan-400 [text-shadow:_0_0_8px_theme(colors.cyan.500)]">
-            {snippet.name}
+            DLC Character: {dlcCharacter.name}
           </h2>
           <button
               onClick={() => setIsModalOpen(true)}
@@ -46,27 +55,44 @@ const LocationDisplay: React.FC<LocationDisplayProps> = ({ snippet, isLoading })
         </header>
         
         <div className="space-y-4">
-          <InfoBlock title="Setting Description" content={snippet.setting_description} />
+          <InfoBlock title="Intro Scene" content={dlcCharacter.intro_scene} />
         </div>
-
-        <div className="border-t border-slate-700/50 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ListBlock title="Cultural & Tech Features" items={snippet.cultural_features} />
-            <ListBlock title="Visual Motifs for AI Art" items={snippet.visual_motifs} />
+        
+        <div className="border-t border-slate-700/50 pt-6">
+            <h3 className="text-xl font-bold text-cyan-400 mb-2">AI Art Prompt</h3>
+            <div className="relative">
+                <p className="text-gray-300 whitespace-pre-wrap font-mono bg-slate-900 p-4 rounded-md border border-slate-700 text-sm">
+                    {dlcCharacter.art_prompt}
+                </p>
+                <button
+                    onClick={handleArtPromptCopy}
+                    className="absolute top-2 right-2 flex items-center justify-center px-3 py-1.5 bg-slate-700 text-gray-300 font-semibold rounded-md transition-colors duration-200 hover:bg-cyan-500 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-500"
+                    aria-label="Copy art prompt to clipboard"
+                >
+                    {isArtPromptCopied ? <CheckIcon /> : <CopyIcon />}
+                </button>
+            </div>
         </div>
 
         <div className="border-t border-slate-700/50 pt-6">
-             <h3 className="font-bold text-cyan-400 mb-2 text-xl">Story Hook / Hazard</h3>
-             <p className="text-gray-300">
-                {snippet.story_hook}
-            </p>
+          <h3 className="font-bold text-xl text-cyan-400 mb-1">Community Remix Challenge</h3>
+          <blockquote className="border-l-4 border-cyan-500 pl-4 italic text-gray-300">
+              <p>{dlcCharacter.community_challenge}</p>
+          </blockquote>
         </div>
 
+        <div className="border-t border-slate-700/50 pt-6">
+          <h3 className="font-bold text-xl text-cyan-400 mb-1">Dialogue Sample</h3>
+          <blockquote className="border-l-4 border-cyan-500 pl-4 italic text-gray-300">
+              <p>"{dlcCharacter.dialogue_sample}"</p>
+          </blockquote>
+        </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${snippet.name}`}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${dlcCharacter.name}`}>
         <div className="relative">
             <button
-                onClick={handleCopy}
+                onClick={handleModalCopy}
                 className="absolute -top-1 -right-1 flex items-center justify-center px-3 py-1.5 bg-slate-700 text-gray-300 font-semibold rounded-md transition-colors duration-200 hover:bg-cyan-500 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500"
                 aria-label="Copy Markdown to clipboard"
             >
@@ -105,19 +131,4 @@ const InfoBlock: React.FC<InfoBlockProps> = ({ title, content }) => (
     </div>
 );
 
-interface ListBlockProps {
-    title: string;
-    items: string[];
-}
-
-const ListBlock: React.FC<ListBlockProps> = ({ title, items }) => (
-    <div>
-        <h3 className="text-xl font-bold text-cyan-400 mb-2">{title}</h3>
-        <ul className="list-disc list-inside space-y-2 text-gray-300">
-            {items.map((item, index) => <li key={index}>{item}</li>)}
-        </ul>
-    </div>
-);
-
-
-export default LocationDisplay;
+export default DlcCharacterDisplay;

@@ -1,40 +1,52 @@
-
 import React, { useState, useCallback } from 'react';
-import { LocationSnippet } from '../services/geminiService';
-import { toLocationSnippetMarkdown } from '../services/markdownService';
+import { MerchIdeas, MerchIdea } from '../services/geminiService';
+import { toMerchIdeasMarkdown } from '../services/markdownService';
 import Modal from './Modal';
 import { GithubIcon, CopyIcon, CheckIcon } from './icons';
 
-interface LocationDisplayProps {
-  snippet: LocationSnippet | null;
+interface MerchDisplayProps {
+  merch: MerchIdeas | null;
   isLoading: boolean;
 }
 
-const LocationDisplay: React.FC<LocationDisplayProps> = ({ snippet, isLoading }) => {
+const MerchCard: React.FC<{ idea: MerchIdea }> = ({ idea }) => {
+    return (
+        <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4 flex flex-col space-y-3">
+            <h4 className="font-bold text-cyan-300 text-lg">{idea.type}</h4>
+            <p className="text-sm text-gray-300 flex-grow">{idea.description}</p>
+            <div className="text-xs text-gray-400">
+                <p className="font-semibold text-gray-200">Art Suggestion:</p>
+                <p className="italic">{idea.art_prompt_suggestion}</p>
+            </div>
+        </div>
+    )
+}
+
+const MerchDisplay: React.FC<MerchDisplayProps> = ({ merch, isLoading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
-    if (snippet) {
-      const markdown = toLocationSnippetMarkdown(snippet);
+    if (merch) {
+      const markdown = toMerchIdeasMarkdown(merch);
       navigator.clipboard.writeText(markdown);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);
     }
-  }, [snippet]);
+  }, [merch]);
 
-  if (isLoading || !snippet) {
+  if (isLoading || !merch) {
     return null;
   }
 
-  const markdownContent = toLocationSnippetMarkdown(snippet);
+  const markdownContent = toMerchIdeasMarkdown(merch);
 
   return (
     <>
       <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 mt-6 shadow-lg shadow-cyan-500/10 animate-fade-in space-y-6">
         <header className="relative">
           <h2 className="text-3xl font-bold text-cyan-400 [text-shadow:_0_0_8px_theme(colors.cyan.500)]">
-            {snippet.name}
+            Merch Concepts: {merch.title}
           </h2>
           <button
               onClick={() => setIsModalOpen(true)}
@@ -45,25 +57,12 @@ const LocationDisplay: React.FC<LocationDisplayProps> = ({ snippet, isLoading })
           </button>
         </header>
         
-        <div className="space-y-4">
-          <InfoBlock title="Setting Description" content={snippet.setting_description} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {merch.ideas.map((idea) => <MerchCard key={idea.type} idea={idea} />)}
         </div>
-
-        <div className="border-t border-slate-700/50 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ListBlock title="Cultural & Tech Features" items={snippet.cultural_features} />
-            <ListBlock title="Visual Motifs for AI Art" items={snippet.visual_motifs} />
-        </div>
-
-        <div className="border-t border-slate-700/50 pt-6">
-             <h3 className="font-bold text-cyan-400 mb-2 text-xl">Story Hook / Hazard</h3>
-             <p className="text-gray-300">
-                {snippet.story_hook}
-            </p>
-        </div>
-
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${snippet.name}`}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${merch.title}`}>
         <div className="relative">
             <button
                 onClick={handleCopy}
@@ -93,31 +92,4 @@ const LocationDisplay: React.FC<LocationDisplayProps> = ({ snippet, isLoading })
   );
 };
 
-interface InfoBlockProps {
-    title: string;
-    content: string;
-}
-
-const InfoBlock: React.FC<InfoBlockProps> = ({ title, content }) => (
-    <div>
-        <h3 className="text-xl font-bold text-cyan-400 mb-2">{title}</h3>
-        <p className="text-gray-300 whitespace-pre-wrap">{content}</p>
-    </div>
-);
-
-interface ListBlockProps {
-    title: string;
-    items: string[];
-}
-
-const ListBlock: React.FC<ListBlockProps> = ({ title, items }) => (
-    <div>
-        <h3 className="text-xl font-bold text-cyan-400 mb-2">{title}</h3>
-        <ul className="list-disc list-inside space-y-2 text-gray-300">
-            {items.map((item, index) => <li key={index}>{item}</li>)}
-        </ul>
-    </div>
-);
-
-
-export default LocationDisplay;
+export default MerchDisplay;

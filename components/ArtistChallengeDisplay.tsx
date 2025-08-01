@@ -1,40 +1,40 @@
 
 import React, { useState, useCallback } from 'react';
-import { LocationSnippet } from '../services/geminiService';
-import { toLocationSnippetMarkdown } from '../services/markdownService';
+import { RemixChallenge } from '../services/geminiService';
+import { toRemixChallengeMarkdown } from '../services/markdownService';
 import Modal from './Modal';
 import { GithubIcon, CopyIcon, CheckIcon } from './icons';
 
-interface LocationDisplayProps {
-  snippet: LocationSnippet | null;
+interface RemixChallengeDisplayProps {
+  challenge: RemixChallenge | null;
   isLoading: boolean;
 }
 
-const LocationDisplay: React.FC<LocationDisplayProps> = ({ snippet, isLoading }) => {
+const RemixChallengeDisplay: React.FC<RemixChallengeDisplayProps> = ({ challenge, isLoading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
-    if (snippet) {
-      const markdown = toLocationSnippetMarkdown(snippet);
+    if (challenge) {
+      const markdown = toRemixChallengeMarkdown(challenge);
       navigator.clipboard.writeText(markdown);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);
     }
-  }, [snippet]);
+  }, [challenge]);
 
-  if (isLoading || !snippet) {
+  if (isLoading || !challenge) {
     return null;
   }
 
-  const markdownContent = toLocationSnippetMarkdown(snippet);
+  const markdownContent = toRemixChallengeMarkdown(challenge);
 
   return (
     <>
       <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6 mt-6 shadow-lg shadow-cyan-500/10 animate-fade-in space-y-6">
-        <header className="relative">
+        <header className="relative text-center border-b-2 border-cyan-500/30 pb-4">
           <h2 className="text-3xl font-bold text-cyan-400 [text-shadow:_0_0_8px_theme(colors.cyan.500)]">
-            {snippet.name}
+            ✨ Community Remix Challenge: {challenge.title} ✨
           </h2>
           <button
               onClick={() => setIsModalOpen(true)}
@@ -46,24 +46,26 @@ const LocationDisplay: React.FC<LocationDisplayProps> = ({ snippet, isLoading })
         </header>
         
         <div className="space-y-4">
-          <InfoBlock title="Setting Description" content={snippet.setting_description} />
-        </div>
-
-        <div className="border-t border-slate-700/50 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ListBlock title="Cultural & Tech Features" items={snippet.cultural_features} />
-            <ListBlock title="Visual Motifs for AI Art" items={snippet.visual_motifs} />
+          <InfoBlock title="The Scene" content={challenge.intro} />
         </div>
 
         <div className="border-t border-slate-700/50 pt-6">
-             <h3 className="font-bold text-cyan-400 mb-2 text-xl">Story Hook / Hazard</h3>
-             <p className="text-gray-300">
-                {snippet.story_hook}
-            </p>
+          <InfoBlock title="How to Enter" content={challenge.submission_instructions} />
+        </div>
+        
+        <div className="border-t border-slate-700/50 pt-6">
+          <h3 className="font-bold text-xl text-cyan-400 mb-2">🏆 The Prize 🏆</h3>
+          <p className="text-gray-300 whitespace-pre-wrap">{challenge.prize_details}</p>
         </div>
 
+         <div className="border-t border-slate-700/50 pt-6 text-center">
+          <blockquote className="italic text-gray-300">
+              <p>{challenge.closing_line}</p>
+          </blockquote>
+        </div>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${snippet.name}`}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Markdown Preview: ${challenge.title}`}>
         <div className="relative">
             <button
                 onClick={handleCopy}
@@ -105,19 +107,4 @@ const InfoBlock: React.FC<InfoBlockProps> = ({ title, content }) => (
     </div>
 );
 
-interface ListBlockProps {
-    title: string;
-    items: string[];
-}
-
-const ListBlock: React.FC<ListBlockProps> = ({ title, items }) => (
-    <div>
-        <h3 className="text-xl font-bold text-cyan-400 mb-2">{title}</h3>
-        <ul className="list-disc list-inside space-y-2 text-gray-300">
-            {items.map((item, index) => <li key={index}>{item}</li>)}
-        </ul>
-    </div>
-);
-
-
-export default LocationDisplay;
+export default RemixChallengeDisplay;
